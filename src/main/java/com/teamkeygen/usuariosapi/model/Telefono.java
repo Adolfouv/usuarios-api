@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.FetchType;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Telefono {
@@ -15,8 +16,13 @@ public class Telefono {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "El número no puede estar vacío")
     private String numero;
+
+    @NotBlank(message = "El código de ciudad no puede estar vacío")
     private String codigoCiudad;
+
+    @NotBlank(message = "El código de país no puede estar vacío")
     private String codigoPais;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -24,7 +30,6 @@ public class Telefono {
     private Usuario usuario;
 
     //Constructores, getters y setters
-
     public Telefono() {
     }
 
