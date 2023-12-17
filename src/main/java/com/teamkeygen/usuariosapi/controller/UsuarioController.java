@@ -1,5 +1,8 @@
 package com.teamkeygen.usuariosapi.controller;
 
+import com.teamkeygen.usuariosapi.config.JwtUtil;
+import com.teamkeygen.usuariosapi.model.AuthenticationRequest;
+import com.teamkeygen.usuariosapi.model.AuthenticationResponse;
 import com.teamkeygen.usuariosapi.model.Usuario;
 import com.teamkeygen.usuariosapi.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -22,6 +25,17 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest request) {
+        // Autenticar al usuario y generar el token
+        String jwt = jwtUtil.generateToken(request.getUsername());
+        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+    }
 
     @PostMapping
     public ResponseEntity<Usuario> crearUsuario(@Valid @RequestBody Usuario usuario) {

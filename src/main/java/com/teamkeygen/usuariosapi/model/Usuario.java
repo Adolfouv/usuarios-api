@@ -8,8 +8,11 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,17 +36,30 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Telefono> telefonos = new HashSet<>();
 
+    @CreatedDate
+    private Date creado;
+
+    @LastModifiedDate
+    private Date modificado;
+
+    private Date ultimoLogin;
+
+    private boolean activo;
 
     //Constructores, getters y setters
     public Usuario() {
     }
 
-    public Usuario(Long id, String nombre, String correo, String contraseña, Set<Telefono> telefonos) {
+    public Usuario(Long id, String nombre, String correo, String contraseña, Set<Telefono> telefonos, Date creado, Date modificado, Date ultimoLogin, boolean activo) {
         this.id = id;
         this.nombre = nombre;
         this.correo = correo;
         this.contraseña = contraseña;
         this.telefonos = telefonos;
+        this.creado = creado;
+        this.modificado = modificado;
+        this.ultimoLogin = ultimoLogin;
+        this.activo = activo;
     }
 
     public Long getId() {
@@ -84,5 +100,37 @@ public class Usuario {
 
     public void setTelefonos(Set<Telefono> telefonos) {
         this.telefonos = telefonos;
+    }
+
+    public Date getCreado() {
+        return creado;
+    }
+
+    public void setCreado(Date creado) {
+        this.creado = creado;
+    }
+
+    public Date getModificado() {
+        return modificado;
+    }
+
+    public void setModificado(Date modificado) {
+        this.modificado = modificado;
+    }
+
+    public Date getUltimoLogin() {
+        return ultimoLogin;
+    }
+
+    public void setUltimoLogin(Date ultimoLogin) {
+        this.ultimoLogin = ultimoLogin;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 }
