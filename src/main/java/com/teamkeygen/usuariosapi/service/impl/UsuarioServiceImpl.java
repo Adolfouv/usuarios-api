@@ -1,24 +1,45 @@
 package com.teamkeygen.usuariosapi.service.impl;
 
 import com.teamkeygen.usuariosapi.exception.UsuarioNoEncontradoException;
+import com.teamkeygen.usuariosapi.exception.UsuarioYaRegistradoException;
 import com.teamkeygen.usuariosapi.model.Telefono;
 import com.teamkeygen.usuariosapi.model.Usuario;
 import com.teamkeygen.usuariosapi.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.teamkeygen.usuariosapi.service.UsuarioService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import java.util.regex.Pattern;
+
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
+    @Value("${usuario.password.regex}")
+    private String passwordRegex;
+
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     // Crear un nuevo usuario
     @Override
     public Usuario crearUsuario(Usuario usuario) {
+        // Validar la contraseña
+        if (!Pattern.matches(passwordRegex, usuario.getContraseña())) {
+            throw new IllegalArgumentException("La contraseña no cumple con los requisitos de seguridad.");
+        }
+
+        //Validar si ya existe el correo
+        if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
+            throw new UsuarioYaRegistradoException("El correo ya está registrado");
+        }
+
         // Asignar el usuario a cada teléfono y guardarlos
         usuario.getTelefonos().forEach(telefono -> telefono.setUsuario(usuario));
         return usuarioRepository.save(usuario);
