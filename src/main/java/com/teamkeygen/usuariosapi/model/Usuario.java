@@ -48,6 +48,8 @@ public class Usuario {
 
     private boolean activo = true;
 
+    private String token;
+
     @PrePersist
     public void prePersist() {
         ultimoLogin = new Date();
@@ -58,7 +60,7 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(Long id, String nombre, String correo, String contraseña, Set<Telefono> telefonos, Date creado, Date modificado, Date ultimoLogin, boolean activo) {
+    public Usuario(Long id, String nombre, String correo, String contraseña, Set<Telefono> telefonos, Date creado, Date modificado, Date ultimoLogin, boolean activo, String token) {
         this.id = id;
         this.nombre = nombre;
         this.correo = correo;
@@ -68,6 +70,15 @@ public class Usuario {
         this.modificado = modificado;
         this.ultimoLogin = ultimoLogin;
         this.activo = activo;
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public Long getId() {

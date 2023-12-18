@@ -1,9 +1,11 @@
 package com.teamkeygen.usuariosapi.service.impl;
 
+import com.teamkeygen.usuariosapi.config.JwtTokenUtil;
 import com.teamkeygen.usuariosapi.exception.UsuarioNoEncontradoException;
 import com.teamkeygen.usuariosapi.exception.UsuarioYaRegistradoException;
 import com.teamkeygen.usuariosapi.model.Telefono;
 import com.teamkeygen.usuariosapi.model.Usuario;
+import com.teamkeygen.usuariosapi.model.UsuarioResponse;
 import com.teamkeygen.usuariosapi.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.teamkeygen.usuariosapi.service.UsuarioService;
@@ -25,6 +27,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
     public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
@@ -32,7 +37,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Usuario crearUsuario(Usuario usuario) {
+    public UsuarioResponse crearUsuario(Usuario usuario) {
         // Validar la contraseña
         if (!Pattern.matches(passwordRegex, usuario.getContraseña())) {
             throw new IllegalArgumentException("La contraseña no cumple con los requisitos de seguridad.");
@@ -43,10 +48,32 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new UsuarioYaRegistradoException("El correo ya está registrado");
         }
 
+        // Validar que al menos un teléfono sea proporcionado
+        if (usuario.getTelefonos() == null || usuario.getTelefonos().isEmpty()) {
+            throw new IllegalArgumentException("Debe proporcionar al menos un teléfono.");
+        }
+
+        String token = jwtTokenUtil.generateToken(usuario.getCorreo());
+        usuario.setToken(token);
+
         // Asignar el usuario a cada teléfono y guardarlos
         usuario.getTelefonos().forEach(telefono -> telefono.setUsuario(usuario));
-        return usuarioRepository.save(usuario);
+
+        // Guardar el usuario en la base de datos
+        Usuario usuarioGuardado = usuarioRepository.save(usuario);
+
+        // Crear y devolver un UsuarioResponse con la información relevante
+        UsuarioResponse usuarioResponse = new UsuarioResponse();
+        usuarioResponse.setId(usuarioGuardado.getId());
+        usuarioResponse.setCreado(usuarioGuardado.getCreado().toString());
+        usuarioResponse.setModificado(usuarioGuardado.getModificado().toString());
+        usuarioResponse.setUltimoLogin(usuarioGuardado.getUltimoLogin().toString());
+        usuarioResponse.setActivo(usuarioGuardado.isActivo());
+        usuarioResponse.setToken(usuarioGuardado.getToken());
+
+        return usuarioResponse;
     }
+
 
 
     // Obtener un usuario por su ID
@@ -83,9 +110,13 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 
 
-    // Eliminar un usuario
+    // Eliminación lógica de un usuario
     @Override
     public void eliminarUsuario(Long id) {
-        usuarioRepository.deleteById(id);
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new UsuarioNoEncontradoException(id));
+
+        usuario.setActivo(false);
+        usuarioRepository.save(usuario);
     }
 }

@@ -1,6 +1,7 @@
 package com.teamkeygen.usuariosapi.controller;
 
 import com.teamkeygen.usuariosapi.model.Usuario;
+import com.teamkeygen.usuariosapi.model.UsuarioResponse;
 import com.teamkeygen.usuariosapi.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,25 +27,25 @@ public class UsuarioController {
 
 
 
-    @PostMapping
-    public ResponseEntity<Usuario> crearUsuario(@Valid @RequestBody Usuario usuario) {
-        Usuario nuevoUsuario = usuarioService.crearUsuario(usuario);
-        return ResponseEntity.ok(nuevoUsuario);
+    @PostMapping("/insertarUsuario")
+    public ResponseEntity<UsuarioResponse> crearUsuario(@Valid @RequestBody Usuario usuario) {
+        UsuarioResponse nuevoUsuarioResponse = usuarioService.crearUsuario(usuario);
+        return ResponseEntity.ok(nuevoUsuarioResponse);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/consultarUsuario/{id}")
     public ResponseEntity<Usuario> obtenerUsuarioPorId(@PathVariable Long id) {
         return usuarioService.obtenerUsuarioPorId(id)
                 .map(usuario -> ResponseEntity.ok(usuario))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping
+    @GetMapping("/consultarTodosLosUsuarios")
     public List<Usuario> obtenerTodosLosUsuarios() {
         return usuarioService.obtenerTodosLosUsuarios();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/actualizarUsuario/{id}")
     public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
         try {
             Usuario usuarioActualizado = usuarioService.actualizarUsuario(id, usuario);
@@ -54,7 +55,7 @@ public class UsuarioController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/eliminarUsuario/{id}")
     public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
         try {
             usuarioService.eliminarUsuario(id);

@@ -1,12 +1,14 @@
 package com.teamkeygen.usuariosapi.service;
 
 import com.teamkeygen.usuariosapi.model.Usuario;
+import com.teamkeygen.usuariosapi.model.UsuarioResponse;
+
 import java.util.List;
 import java.util.Optional;
 
 public interface UsuarioService {
 
-    Usuario crearUsuario(Usuario usuario);
+    UsuarioResponse crearUsuario(Usuario usuario);
 
     Optional<Usuario> obtenerUsuarioPorId(Long id);
 
