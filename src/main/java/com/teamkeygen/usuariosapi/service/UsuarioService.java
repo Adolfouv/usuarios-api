@@ -2,7 +2,6 @@ package com.teamkeygen.usuariosapi.service;
 
 import com.teamkeygen.usuariosapi.model.Usuario;
 import com.teamkeygen.usuariosapi.model.UsuarioResponse;
-
 import java.util.List;
 import java.util.Optional;
 
