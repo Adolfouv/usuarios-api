@@ -61,5 +61,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+
+    @ExceptionHandler(UsuarioNoEncontradoException.class)
+    public ResponseEntity<?> handleUsuarioNoEncontradoException(UsuarioNoEncontradoException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("mensaje", "No existe este usuario");
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 }
 

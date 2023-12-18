@@ -40,7 +40,12 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioResponse crearUsuario(Usuario usuario) {
         // Validar la contraseña
         if (!Pattern.matches(passwordRegex, usuario.getContraseña())) {
-            throw new IllegalArgumentException("La contraseña no cumple con los requisitos de seguridad.");
+            throw new IllegalArgumentException("La contraseña no cumple con los requisitos de seguridad. " +
+                    "La contraseña debe contener: " +
+                    "(Al menos una letra minúscula." +
+                    " Al menos un dígito numerico." +
+                    " Al menos un carácter especial." +
+                    " Al menos 8 caracteres en total)");
         }
 
         //Validar si ya existe el correo
@@ -90,21 +95,51 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 
     @Override
-    public Usuario actualizarUsuario(Long id, Usuario usuarioActualizado) {
+    public void actualizarUsuario(Long id, Usuario usuarioActualizado) {
+        // Validación de correo electrónico y contraseña
+        if (!usuarioActualizado.getCorreo().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new IllegalArgumentException("El formato del correo electrónico es inválido");
+        }
+        if (!Pattern.matches(passwordRegex, usuarioActualizado.getContraseña())) {
+            throw new IllegalArgumentException("La contraseña no cumple con los requisitos de seguridad. " +
+                    "La contraseña debe contener: " +
+                    "(Al menos una letra minúscula." +
+                    " Al menos un dígito numerico." +
+                    " Al menos un carácter especial." +
+                    " Al menos 8 caracteres en total)");
+        }
+
+        // Verificar si el correo ya está registrado por otro usuario
+        usuarioRepository.findByCorreo(usuarioActualizado.getCorreo())
+                .ifPresent(usuario -> {
+                    if (!usuario.getId().equals(id)) {
+                        throw new UsuarioYaRegistradoException("El correo ya está registrado");
+                    }
+                });
+
+        // Validar que al menos un teléfono sea proporcionado
+        if (usuarioActualizado.getTelefonos() == null || usuarioActualizado.getTelefonos().isEmpty()) {
+            throw new IllegalArgumentException("Debe proporcionar al menos un teléfono.");
+        }
+
+        // Buscar y obtener el usuario existente
         Usuario usuarioExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNoEncontradoException(id));
 
+        // Actualizar los datos del usuario
         usuarioExistente.setNombre(usuarioActualizado.getNombre());
         usuarioExistente.setCorreo(usuarioActualizado.getCorreo());
         usuarioExistente.setContraseña(usuarioActualizado.getContraseña());
 
+        // Actualizar los teléfonos
         usuarioExistente.getTelefonos().clear();
         for (Telefono telefono : usuarioActualizado.getTelefonos()) {
             telefono.setUsuario(usuarioExistente);
             usuarioExistente.getTelefonos().add(telefono);
         }
 
-        return usuarioRepository.save(usuarioExistente);
+        // Guardar el usuario actualizado
+        usuarioRepository.save(usuarioExistente);
     }
 
 
@@ -115,7 +150,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     public void eliminarUsuario(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNoEncontradoException(id));
-
         usuario.setActivo(false);
         usuarioRepository.save(usuario);
     }

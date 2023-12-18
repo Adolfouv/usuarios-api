@@ -1,9 +1,11 @@
 package com.teamkeygen.usuariosapi.controller;
 
+import com.teamkeygen.usuariosapi.exception.UsuarioYaRegistradoException;
 import com.teamkeygen.usuariosapi.model.Usuario;
 import com.teamkeygen.usuariosapi.model.UsuarioResponse;
 import com.teamkeygen.usuariosapi.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import com.teamkeygen.usuariosapi.exception.UsuarioNoEncontradoException;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -35,9 +39,9 @@ public class UsuarioController {
 
     @GetMapping("/consultarUsuario/{id}")
     public ResponseEntity<Usuario> obtenerUsuarioPorId(@PathVariable Long id) {
-        return usuarioService.obtenerUsuarioPorId(id)
-                .map(usuario -> ResponseEntity.ok(usuario))
-                .orElse(ResponseEntity.notFound().build());
+        Usuario usuario = usuarioService.obtenerUsuarioPorId(id)
+                .orElseThrow(() -> new UsuarioNoEncontradoException(id));
+        return ResponseEntity.ok(usuario);
     }
 
     @GetMapping("/consultarTodosLosUsuarios")
@@ -46,22 +50,28 @@ public class UsuarioController {
     }
 
     @PutMapping("/actualizarUsuario/{id}")
-    public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
+    public ResponseEntity<?> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
         try {
-            Usuario usuarioActualizado = usuarioService.actualizarUsuario(id, usuario);
-            return ResponseEntity.ok(usuarioActualizado);
+            usuarioService.actualizarUsuario(id, usuario);
+            Map<String, String> response = new HashMap<>();
+            response.put("mensaje", "Usuario actualizado correctamente");
+            return ResponseEntity.ok(response);
         } catch (UsuarioNoEncontradoException e) {
-            return ResponseEntity.notFound().build();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("mensaje", "No existe este usuario");
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException | UsuarioYaRegistradoException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("mensaje", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @DeleteMapping("/eliminarUsuario/{id}")
-    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
-        try {
-            usuarioService.eliminarUsuario(id);
-            return ResponseEntity.ok().build();
-        } catch (UsuarioNoEncontradoException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<?> eliminarUsuario(@PathVariable Long id) {
+        usuarioService.eliminarUsuario(id);
+        Map<String, String> response = new HashMap<>();
+        response.put("mensaje", "Usuario desactivado correctamente");
+        return ResponseEntity.ok(response);
     }
 }
