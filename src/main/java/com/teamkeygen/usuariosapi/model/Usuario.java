@@ -1,26 +1,24 @@
 package com.teamkeygen.usuariosapi.model;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.CascadeType;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Usuario {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     @NotBlank(message = "El nombre no puede estar vacío")
@@ -34,17 +32,27 @@ public class Usuario {
     private String contraseña;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Set<Telefono> telefonos = new HashSet<>();
 
     @CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
     private Date creado;
 
     @LastModifiedDate
+    @Temporal(TemporalType.TIMESTAMP)
     private Date modificado;
 
+    @Temporal(TemporalType.TIMESTAMP)
     private Date ultimoLogin;
 
-    private boolean activo;
+    private boolean activo = true;
+
+    @PrePersist
+    public void prePersist() {
+        ultimoLogin = new Date();
+    }
+
 
     //Constructores, getters y setters
     public Usuario() {

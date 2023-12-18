@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.teamkeygen.usuariosapi.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.regex.Pattern;
 
 import java.util.List;
@@ -27,7 +29,8 @@ public class UsuarioServiceImpl implements UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    // Crear un nuevo usuario
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Usuario crearUsuario(Usuario usuario) {
         // Validar la contraseña
