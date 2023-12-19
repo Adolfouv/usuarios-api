@@ -1,4 +1,4 @@
-#API REST de Gestión de Usuarios
+[NTTDATA Gestor de Usuarios.postman_collection.json](https://github.com/Adolfouv/usuarios-api/files/13709757/NTTDATA.Gestor.de.Usuarios.postman_collection.json)#API REST de Gestión de Usuarios
 
 Esta API REST es un servicio backend diseñado para gestionar el registro y la administración de usuarios. Permite crear, actualizar, eliminar y recuperar información de usuarios, así como manejar la autenticación y el control de acceso.
 
@@ -65,5 +65,147 @@ A continuación demostraremos paso a paso como se puede levantar esta API Rest e
 
 Una vez levantado el proyecto podremos probarlo con una coleccion POSTMAN que está preparada para que el usuario interactúe directamente con el puerto 8080 (en caso de levantar el proyecto en otro puerto, por favor ajustar el puerto en cada endpoint de cada http request)
 
-1
+[Uploading NTTDATA G{
+	"info": {
+		"_postman_id": "134a8aa6-378e-40cc-b393-57f35c1b5713",
+		"name": "NTTDATA Gestor de Usuarios",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16895339"
+	},
+	"item": [
+		{
+			"name": "Buscar Todos los Usuarios",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/usuarios/consultarTodosLosUsuarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"usuarios",
+						"consultarTodosLosUsuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar un Usuario",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"Adolfo Ulloa\",\r\n    \"correo\": \"fito8829@example.com\",\r\n    \"contraseña\": \"p2assWORD!\",\r\n    \"telefonos\": [\r\n        {\r\n            \"numero\": \"55553222\",\r\n            \"codigoCiudad\": \"7\",\r\n            \"codigoPais\": \"59\"\r\n        }\r\n    ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/usuarios/insertarUsuario",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"usuarios",
+						"insertarUsuario"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Borrar un Usuario",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/usuarios/eliminarUsuario/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"usuarios",
+						"eliminarUsuario",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar por ID usuario",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"Juan Perez\",\r\n    \"correo\": \"juanperez@example.com\",\r\n    \"contraseña\": \"Password123!\",\r\n    \"telefonos\": [\r\n        {\r\n            \"numero\": \"123456789\",\r\n            \"codigoCiudad\": \"1\",\r\n            \"codigoPais\": \"57\"\r\n        }\r\n    ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/usuarios/consultarUsuario/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"usuarios",
+						"consultarUsuario",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar un Usuario",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"Adolfo Ulloa2\",\r\n    \"correo\": \"fito818@example.com\",\r\n    \"contraseña\": \"p2assWORD!\",\r\n    \"telefonos\": [\r\n        {\r\n            \"numero\": \"11\",\r\n            \"codigoCiudad\": \"7\",\r\n            \"codigoPais\": \"59\"\r\n        }\r\n    ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/usuarios/actualizarUsuario/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"usuarios",
+						"actualizarUsuario",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}estor de Usuarios.postman_collection.json…]()
 
