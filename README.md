@@ -1,4 +1,4 @@
-![image](https://github.com/Adolfouv/usuarios-api/assets/69990720/1b9517e0-f59b-4b8c-b767-d411188ac4c4)#API REST de Gestión de Usuarios
+#API REST de Gestión de Usuarios
 Esta API REST es un servicio backend diseñado para gestionar el registro y la administración de usuarios. Permite crear, actualizar, eliminar y recuperar información de usuarios, así como manejar la autenticación y el control de acceso.
 
 La API es ideal para integrarse en aplicaciones que requieren la gestión de usuarios, con soporte para operaciones CRUD (Crear, Leer, Actualizar, Borrar) sobre los datos de los usuarios. Además, implementa autenticación JWT (Json Web Tokens) para asegurar la comunicación y el acceso a los recursos.
