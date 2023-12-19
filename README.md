@@ -1,4 +1,5 @@
 #API REST de Gestión de Usuarios
+
 Esta API REST es un servicio backend diseñado para gestionar el registro y la administración de usuarios. Permite crear, actualizar, eliminar y recuperar información de usuarios, así como manejar la autenticación y el control de acceso.
 
 La API es ideal para integrarse en aplicaciones que requieren la gestión de usuarios, con soporte para operaciones CRUD (Crear, Leer, Actualizar, Borrar) sobre los datos de los usuarios. Además, implementa autenticación JWT (Json Web Tokens) para asegurar la comunicación y el acceso a los recursos.
