@@ -17,7 +17,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/seguridad/login", "/usuarios", "/usuarios/**").permitAll() // Permite el acceso sin autenticación
+                .antMatchers("/seguridad/login", "/usuarios", "/usuarios/**",
+                        "/swagger-ui/**", "/swagger-config", "/swagger-ui.html", "/v3/api-docs/**").permitAll() // Permite el acceso sin autenticación
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
